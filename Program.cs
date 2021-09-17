@@ -16,20 +16,40 @@ namespace VMwareMacEditor
         static void Main(string[] args)
         {
             //程式參數部分
-            string targetIp = "10.0.1";                                                                        //請輸入 至前3份即可
-            string virtualMachineLocation = @"C:\Users\E901\Documents\Virtual Machines";                            //VMware 虛擬機資料夾位置
-            string machineName = @"CentOS version 5 and earlier 64-bit";                                            //虛擬機名稱
-            
+            string targetIp = "10.0.1";     
+            //請輸入 至前3份即可
+            string virtualMachineLocation_CentOS = @"C:\Users\E901\Documents\Virtual Machines";                             //VMware CentOS虛擬機資料夾位置
+            string machineName_CentOS = @"CentOS version 5 and earlier 64-bit";                                             //虛擬機名稱 CentOS
+
+            string virtualMachineLocation_Ubuntu = @"C:\Users\E901\Documents\Virtual Machines";                             //UBUNTU 虛擬機資料夾位置
+            string machineName_Ubuntu = @"Ubuntu 64-bit 20.04.3";                                                           //虛擬機名稱 Ubuntu
+
+
+
+
             //執行
-            string[] ethernetIp = findLocalIp(targetIp);
-            if (ethernetIp[1] == "1")
+            int restartTime = 0; //無法搜尋到IP次數
+            while (true)
             {
-                changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation, machineName);
-            }
-            else
-            {
-                Console.WriteLine("Target ip didn't Exist!!!");
-                Thread.Sleep(1500);
+                string[] ethernetIp = findLocalIp(targetIp);
+                if (ethernetIp[1] == "1")
+                {
+                    changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_CentOS, machineName_CentOS, 1);
+                    changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_Ubuntu, machineName_Ubuntu, 2);
+                    break;
+                }
+                else if(restartTime >= 5)
+                {
+                    Console.WriteLine("No Ip Found , Programe Shutdown !! ");
+                    Thread.Sleep(5000);
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("No Ip Found , Restart in 5 Second !! ");
+                    Thread.Sleep(5000);
+                    restartTime++;
+                }
             }
             //Pause
             
@@ -79,14 +99,18 @@ namespace VMwareMacEditor
             }
             return ipInformation;
         }
-        static string[] openTxtToArray(string path)
+
+
+
+        static string[] openTxtToArray(string path)                 //將VMX內的資料處理成陣列
         {
             string text = File.ReadAllText(path, Encoding.Default);
             string[] newText = text.Split('\n');
             return newText;
+
         }
 
-        static void changeVmwareMacAddress(string localIp,string path,string fileName)
+        static void changeVmwareMacAddress(string localIp,string path,string fileName,int VM_Number)
         {
             List<int> emptyRow = new List<int>();
             List<int> ethernetNo = new List<int>();
@@ -104,9 +128,9 @@ namespace VMwareMacEditor
             //確認檔案存在
             if (File.Exists(folderPath + @"\" + fileName + @".vmx"))
             {
-                string[] text = openTxtToArray(folderPath + @"\" + fileName + @".vmx");
+                string[] text = openTxtToArray(folderPath + @"\" + fileName + @".vmx");             //處理資料成陣列
                 //刪除指定內容
-                for (int i = 0; i < text.Length; i++)
+                for (int i = 0; i < text.Length; i++)                                               //批次搜尋資料
                 {
                     if (text[i].IndexOf("generatedAddress") != -1 && text[i].IndexOf("generatedAddressOffset") == -1)
                     {
@@ -143,7 +167,9 @@ namespace VMwareMacEditor
 
                 for (int i = 0; i < ethernetNo.Count(); i++)
                 {
-                    string currentPort = string.Format("{0:00}", ethernetNo[i]);
+                    string currentPort = string.Format("{0:0}", ethernetNo[i]) + string.Format("{0:0}",VM_Number);
+                    Console.WriteLine($"CurrentPort = {currentPort}");
+                    Thread.Sleep(1000);
                     newText[newTextTimer] = $"ethernet{ethernetNo[i]}.address = 00:50:56:{currentPort}:{currentHost}";
                     newTextTimer++;
                 }
