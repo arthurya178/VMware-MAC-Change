@@ -18,12 +18,14 @@ namespace VMwareMacEditor
             //程式參數部分
             string targetIp = "10.0.1";     
             //請輸入 至前3份即可
-            string virtualMachineLocation_CentOS = @"C:\Users\E901\Documents\Virtual Machines";                             //VMware CentOS虛擬機資料夾位置
-            string machineName_CentOS = @"CentOS version 5 and earlier 64-bit";                                             //虛擬機名稱 CentOS
+            string virtualMachineLocation_CentOS = @"C:\Users\E901-61\Documents\Virtual Machines";                             //VMware CentOS虛擬機資料夾位置
+            string machineName_CentOS = @"Ubuntu 64-bit 18.04";                                             //虛擬機名稱 CentOS
 
-            string virtualMachineLocation_Ubuntu = @"C:\Users\E901\Documents\Virtual Machines";                             //UBUNTU 虛擬機資料夾位置
-            string machineName_Ubuntu = @"Ubuntu 64-bit 20.04.3";                                                           //虛擬機名稱 Ubuntu
+            string virtualMachineLocation_Ubuntu18_04 = @"C:\Users\E901-61\Documents\Virtual Machines";                             //UBUNTU 虛擬機資料夾位置
+            string machineName_Ubuntu18_04 = @"Ubuntu 64-bit 18.04 LTS";                                                           //虛擬機名稱 Ubuntu
 
+             string virtualMachineLocation_Ubuntu20_04 = @"C:\Users\E901-61\Documents\Virtual Machines";                             //UBUNTU 虛擬機資料夾位置
+            string machineName_Ubuntu20_04 = @"Ubuntu 64-bit 20.04 LTS";                                                           //虛擬機名稱 Ubuntu
 
 
 
@@ -35,12 +37,13 @@ namespace VMwareMacEditor
                 if (ethernetIp[1] == "1")
                 {
                     changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_CentOS, machineName_CentOS, 1);
-                    changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_Ubuntu, machineName_Ubuntu, 2);
+                    changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_Ubuntu18_04, machineName_Ubuntu18_04, 2);
+                    changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_Ubuntu20_04, machineName_Ubuntu20_04, 3);
                     break;
                 }
                 else if(restartTime >= 5)
                 {
-                    Console.WriteLine("No Ip Found , Programe Shutdown !! ");
+                    Console.WriteLine("No Internet or Ip Found , Programe Shutdown !! ");
                     Thread.Sleep(5000);
                     break;
                 }
@@ -169,11 +172,12 @@ namespace VMwareMacEditor
                 {
                     string currentPort = string.Format("{0:0}", ethernetNo[i]) + string.Format("{0:0}",VM_Number);
                     Console.WriteLine($"CurrentPort = {currentPort}");
+                    Console.WriteLine($"CurrentMAC =  00:50:56:{currentPort}:{currentHost}");
                     Thread.Sleep(1000);
                     newText[newTextTimer] = $"ethernet{ethernetNo[i]}.address = 00:50:56:{currentPort}:{currentHost}";
                     newTextTimer++;
                 }
-
+                Thread.Sleep(3000);
                 //轉換字串陣列成字串
 
                 string finalText = "";
