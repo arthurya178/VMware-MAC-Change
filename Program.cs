@@ -39,6 +39,8 @@ namespace VMwareMacEditor
                     changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_CentOS, machineName_CentOS, 1);
                     changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_Ubuntu18_04, machineName_Ubuntu18_04, 2);
                     changeVmwareMacAddress(ethernetIp[0], virtualMachineLocation_Ubuntu20_04, machineName_Ubuntu20_04, 3);
+                    Console.WriteLine($"Mac Edited Finish");
+                    Thread.Sleep(5000);
                     break;
                 }
                 else if(restartTime >= 5)
@@ -189,7 +191,7 @@ namespace VMwareMacEditor
                     newText[newTextTimer++] = $"ethernet{ethernetNo[i]}.addressType = static";
                     newText[newTextTimer++] = $"ethernet{ethernetNo[i]}.address = 00:50:56:{currentPort}:{currentHost}";
                 }
-                Thread.Sleep(3000);
+                
                 //轉換字串陣列成字串
 
                 string finalText = "";
