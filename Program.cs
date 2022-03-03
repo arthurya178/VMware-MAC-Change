@@ -44,13 +44,13 @@ namespace VMwareMacEditor
                 else if(restartTime >= 5)
                 {
                     Console.WriteLine("No Internet or Ip Found , Programe Shutdown !! ");
-                    Thread.Sleep(5000);
+                    Thread.Sleep(3000);
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("No Ip Found , Restart in 5 Second !! ");
-                    Thread.Sleep(5000);
+                    Console.WriteLine("No Ip Found , Restart in 3 Second !! ");
+                    Thread.Sleep(3000);
                     restartTime++;
                 }
             }
@@ -153,6 +153,18 @@ namespace VMwareMacEditor
                         checkEthernetExist(int.Parse(text[i][8].ToString()));
                         text[i] = "";
                     }
+                    if (text[i].IndexOf("genicAddressOffset") != -1)
+                    {
+                        emptyRow.Add(i);
+                        checkEthernetExist(int.Parse(text[i][8].ToString()));
+                        text[i] = "";
+                    }
+                    if (text[i].IndexOf("ethernet") != -1 && text[i].IndexOf("address") != -1)
+                    {
+                        emptyRow.Add(i);
+                        checkEthernetExist(int.Parse(text[i][8].ToString()));
+                        text[i] = "";
+                    }
                 }
                 //整理字串陣列
                 string[] newText = new string[text.Length + ethernetNo.Count()];
@@ -174,8 +186,8 @@ namespace VMwareMacEditor
                     Console.WriteLine($"CurrentPort = {currentPort}");
                     Console.WriteLine($"CurrentMAC =  00:50:56:{currentPort}:{currentHost}");
                     Thread.Sleep(1000);
-                    newText[newTextTimer] = $"ethernet{ethernetNo[i]}.address = 00:50:56:{currentPort}:{currentHost}";
-                    newTextTimer++;
+                    newText[newTextTimer++] = $"ethernet{ethernetNo[i]}.addressType = static";
+                    newText[newTextTimer++] = $"ethernet{ethernetNo[i]}.address = 00:50:56:{currentPort}:{currentHost}";
                 }
                 Thread.Sleep(3000);
                 //轉換字串陣列成字串
